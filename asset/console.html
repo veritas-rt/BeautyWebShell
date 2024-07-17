@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>対話型コンソール</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #1b1b1b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .input, .output {
+            width: 80%;
+            margin: 10px 0;
+            padding: 10px;
+            color: white;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 4px;
+            font-size: 1.2rem;
+        }
+        .output {
+            height: 800px; /* This sets a ratio of 20:1 compared to the other input field */
+        }
+        .input {
+            height: 40px; /* This sets a ratio of 20:1 compared to the other input field */
+        }
+        .console {
+            width: 100%;
+            max-width: 1600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="console">
+        <textarea id="output" class="output" readonly>Output will be displayed here...</textarea>
+        <input type="text" id="input" class="input" placeholder="Enter command here...">
+    </div>
+    <script>
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const input = document.getElementById("input");
+            const output = document.getElementById("output");
+        
+            input.addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    const command = input.value;
+                    executeCommand(command);
+                    input.value = "";
+                }
+            });
+        
+            function executeCommand(command) {
+                let response = `>> ${command}`;
+
+
+                var requestOptions = {
+                    method: 'GET',
+                 };
+                 
+                 fetch(`./test.php?cmd=${command}`, requestOptions)
+                    .then(response => response.text())
+                    .then(result => {
+                            console.log(result)
+                            response = response + "\r\n" + result; 
+                            appendOutput(response);
+                        }
+                    )
+                    .catch(error => console.log('error', error));
+
+                
+                
+            }
+        
+            function appendOutput(text) {
+
+                text = "\r\n" + text;
+                output.innerHTML += text;
+            }
+        });
+        
+
+
+    </script>
+</body>
+</html>
